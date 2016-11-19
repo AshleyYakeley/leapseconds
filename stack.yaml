@@ -1,5 +1,7 @@
 resolver: lts-7.9
 packages:
 - '.'
+
+allow-newer: true
 extra-deps:
 - time-1.7

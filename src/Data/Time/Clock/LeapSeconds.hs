@@ -1,7 +1,7 @@
 module Data.Time.Clock.LeapSeconds
 (
     LeapSecondMap,
-    NISTLeapSecondList(..),
+    LeapSecondList(..),
     parseNISTLeapSecondList,
     leapSecondListToMap,
 ) where
@@ -12,7 +12,7 @@ module Data.Time.Clock.LeapSeconds
     import Data.Time.Clock.TAI;
 
 
-    data NISTLeapSecondList = MkNISTLeapSecondList
+    data LeapSecondList = MkLeapSecondList
     {
         lslVersion :: Day,
         lslExpiration :: Day,
@@ -49,7 +49,7 @@ module Data.Time.Clock.LeapSeconds
     -- | Parse the text of a NIST leap-second file. This file can be found at <ftp://time.nist.gov/pub/leap-seconds.list>,
     -- and on UNIX systems, at @/usr/share/zoneinfo/leap-seconds.list@.
     ;
-    parseNISTLeapSecondList :: String -> Maybe NISTLeapSecondList;
+    parseNISTLeapSecondList :: String -> Maybe LeapSecondList;
     parseNISTLeapSecondList text = do
     {
         let
@@ -71,10 +71,10 @@ module Data.Time.Clock.LeapSeconds
         {
             transitions = catMaybes $ fmap (\(_,_,x) -> x) mstrs;
         };
-        return $ MkNISTLeapSecondList version expiration transitions;
+        return $ MkLeapSecondList version expiration transitions;
     };
 
-    leapSecondListToMap :: NISTLeapSecondList -> LeapSecondMap;
+    leapSecondListToMap :: LeapSecondList -> LeapSecondMap;
     leapSecondListToMap lsl day | day >= lslExpiration lsl = Nothing;
     leapSecondListToMap lsl day = let
     {
