@@ -1,3 +1,4 @@
+-- | Interpretation of leap second files.
 module Data.Time.Clock.LeapSeconds
 (
     LeapSecondMap,
@@ -12,11 +13,13 @@ module Data.Time.Clock.LeapSeconds
     import Data.Time.Clock.TAI;
 
 
+    -- | A list of leap-second transitions, etc.
+    ;
     data LeapSecondList = MkLeapSecondList
     {
-        lslVersion :: Day,
-        lslExpiration :: Day,
-        lslTransitions :: [(Day,Int)]
+        lslVersion :: Day, -- when the list was created
+        lslExpiration :: Day, -- when the list expires
+        lslTransitions :: [(Day,Int)] -- transitions: TAI - UTC starting at this day
     } deriving Eq;
 
     -- | 1900-01-01
@@ -47,7 +50,7 @@ module Data.Time.Clock.LeapSeconds
     } in val : vals;
 
     -- | Parse the text of a NIST leap-second file. This file can be found at <ftp://time.nist.gov/pub/leap-seconds.list>,
-    -- and on UNIX systems, at @/usr/share/zoneinfo/leap-seconds.list@.
+    -- and on UNIX systems, at @\/usr\/share\/zoneinfo\/leap-seconds.list@.
     ;
     parseNISTLeapSecondList :: String -> Maybe LeapSecondList;
     parseNISTLeapSecondList text = do
@@ -74,6 +77,8 @@ module Data.Time.Clock.LeapSeconds
         return $ MkLeapSecondList version expiration transitions;
     };
 
+    -- | Obtain a map that can be used to convert between TAI and UTC (see "Data.Time.Clock.TAI")
+    ;
     leapSecondListToMap :: LeapSecondList -> LeapSecondMap;
     leapSecondListToMap lsl day | day >= lslExpiration lsl = Nothing;
     leapSecondListToMap lsl day = let
